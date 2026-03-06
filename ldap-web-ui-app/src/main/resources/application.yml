@@ -1,0 +1,51 @@
+# LDAP 运维管理系统 - 应用配置（阶段二）
+spring:
+  application:
+    name: ldap-web-ui
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ldap_ops?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: ${MYSQL_PASSWORD:root}
+
+  sql:
+    init:
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+    open-in-view: false
+
+  # OpenLDAP 连接（业务目录数据，阶段三使用）
+  ldap:
+    base: dc=example,dc=com
+    urls: ldap://localhost:389
+    username: cn=admin,dc=example,dc=com
+    password: ${LDAP_PASSWORD:admin}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# JWT（与 Spring Security 配合）
+jwt:
+  secret: ${JWT_SECRET:ldap-ops-jwt-secret-key-min-256-bits-for-hs256-please-change-in-production}
+  access-token-expire: 7200
+  refresh-token-expire: 604800
+
+# Knife4j 文档
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
